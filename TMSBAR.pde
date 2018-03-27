@@ -24,6 +24,7 @@ int hTimeLeft=0;
 int derniereSonnerie = 0;
 float pourcentCours = 0;
 int typeSn=0;
+public static String OS = System.getProperty("os.name").toLowerCase();
 
 void setup () {
  //size(displayWidth, displayHeight);
@@ -38,11 +39,6 @@ void setup () {
    String SSstring = loadfile[0];
    SS = parseInt(SSstring);
  }
-else{
-  text ("NAAAAAN !", 50, 30);
-}
-
-
 
 }
 
@@ -160,23 +156,26 @@ void draw () {
   }
  
  if (screen == 2){
+   textAlign(CENTER);
+   fill(255);
+   rect(screenX*0.95, 0, screenX*0.05, screenX*0.05); // bouton retour affiché en haut à droite
+   text("Back", screenX*0.5, screenY*0.03);
    textAlign (LEFT,TOP);
    background (255);
    fill (0);
-   rect(screenX*0.95, 0, screenX*0.05, screenX*0.05);
    text("Heure "+hour()+":"+minute()+":"+second()+" ("+heurSecondes+"s)", 0, 0);
    text("Prochaine sonnerie à : "+prochaineSonnerie+" ("+hProchaineSonnerie+"h"+mProchaineSonnerie+"m"+sProchaineSonnerie+"s)", 0, screenY*0.1);
    text(intercours[typeSn], 0, screenY*0.2);
    
    a = hour(); b = minute(); c = second();
-   b = a*60+b; c = b*60+c;
+   b = a*60+b; c = b*60+c; // convertir heure actuelle en secondes écoulées depuis minuit
    heurSecondes = c;
    
-   timeLeft = prochaineSonnerie - heurSecondes;
-   float d = (float)timeLeft/60;
+   timeLeft = prochaineSonnerie - heurSecondes; // le temps restant (en secondes) est la différence entre la prochaine sonnerie et l'heure actuelle
+   float d = (float)timeLeft/60; // convertir en minutes...
    
-   mTimeLeft = floor (d);
-   float partDecd = (float)(d-(floor(d)));
+   mTimeLeft = floor (d); //... puis mettre dans la variable d
+   float partDecd = (float)(d-(floor(d))); //extraire la partie décimale de la variable d
    sTimeLeft = (int)(partDecd*60);
    float e = partDecd*60;
    sTimeLeft = round(e);
@@ -186,8 +185,8 @@ void draw () {
    if (hTimeLeft == 0){
    text("Il reste : "+mTimeLeft+"m"+sTimeLeft+"s", 0, screenY*0.3);}
    else{text("Il reste : "+hTimeLeft+"H "+mTimeLeft+"m"+sTimeLeft+"s", 0, screenY*0.3);}
-   // partie entière = floor
- //  prochaineSonnerie = 72060; ///////////////LIGNE POUR DEBUG////////////////////////////////////
+
+ //  prochaineSonnerie = 72060; ///////////////LIGNE POUR DEBUG après 18h sans déregler l'heure de son pc (ajoute une sonnerie (en secondes écoulées depuis minuit))////////////////////////////////////
    rectMode(CORNER);
    fill(255);
    rect(0.05*screenX-1, 0.80*screenY-1, 0.89*screenX+2, 0.11*screenY+2);
@@ -209,9 +208,9 @@ void draw () {
   
   
   
-  //line(screenX*0.5,screenY*0.7, screenX*0.5, screenY*0.8);
+  //line(screenX*0.5,screenY*0.7, screenX*0.5, screenY*0.8); // ligne pour vérifier si le 50% de la progressbar fonctionne correctement
   
-   if (heurSecondes > prochaineSonnerie){ //<>//
+   if (heurSecondes > prochaineSonnerie){
      configTMS();
    }
 
@@ -260,14 +259,14 @@ float d = (float)prochaineSonnerie/60;
    sProchaineSonnerie = (int)(partDecd*60);
    float e = partDecd*60;
    sProchaineSonnerie = round(e);
-   e = d/60; //<>//
-   d = d-(floor(d)); //<>//
-   d = d+e; //<>//
-   hProchaineSonnerie = floor(d); //<>//
+   e = d/60;
+   d = d-(floor(d));
+   d = d+e;
+   hProchaineSonnerie = floor(d);
    
-   e = e-(floor(e)); //<>//
-   mProchaineSonnerie = round(e*60); //<>//
- //<>//
+   e = e-(floor(e));
+   mProchaineSonnerie = round(e*60);
+
 }
 
 
