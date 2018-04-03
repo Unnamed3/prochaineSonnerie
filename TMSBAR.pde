@@ -156,13 +156,17 @@ void draw () {
   }
  
  if (screen == 2){
+   background (255);
    textAlign(CENTER);
    fill(255);
+   stroke (0);
    rect(screenX*0.95, 0, screenX*0.05, screenX*0.05); // bouton retour affiché en haut à droite
-   text("Back", screenX*0.5, screenY*0.03);
+   fill(0);
+   
+   textSize (0.04*screenY);
+   text("Back", screenX*0.975, screenY*0.0444);
+   textSize (0.0765*screenY);
    textAlign (LEFT,TOP);
-   background (255);
-   fill (0);
    text("Heure "+hour()+":"+minute()+":"+second()+" ("+heurSecondes+"s)", 0, 0);
    text("Prochaine sonnerie à : "+prochaineSonnerie+" ("+hProchaineSonnerie+"h"+mProchaineSonnerie+"m"+sProchaineSonnerie+"s)", 0, screenY*0.1);
    text(intercours[typeSn], 0, screenY*0.2);
@@ -186,7 +190,7 @@ void draw () {
    text("Il reste : "+mTimeLeft+"m"+sTimeLeft+"s", 0, screenY*0.3);}
    else{text("Il reste : "+hTimeLeft+"H "+mTimeLeft+"m"+sTimeLeft+"s", 0, screenY*0.3);}
 
- //  prochaineSonnerie = 72060; ///////////////LIGNE POUR DEBUG après 18h sans déregler l'heure de son pc (ajoute une sonnerie (en secondes écoulées depuis minuit))////////////////////////////////////
+  prochaineSonnerie = 72060; ///////////////LIGNE POUR DEBUG après 18h sans déregler l'heure de son pc (ajoute une sonnerie (en secondes écoulées depuis minuit))////////////////////////////////////
    rectMode(CORNER);
    fill(255);
    rect(0.05*screenX-1, 0.80*screenY-1, 0.89*screenX+2, 0.11*screenY+2);
@@ -223,6 +227,7 @@ void configTMS(){
    b = a*60+b; c = b*60+c;
    heurSecondes = c;
   a=0; b=0; c=0;
+  prochaineSonnerie = 0;
  while (prochaineSonnerie <= heurSecondes){
      a = Lsonne [b] + SS;
      prochaineSonnerie = a;
@@ -380,6 +385,10 @@ highlight = false;
         loadfile[0] = str(SS);
         saveStrings("/storage/emulated/0/SS.var", loadfile);
      // BOUTON Save
+  }
+  if (mouseX>0.95*screenX && mouseY>0 && mouseX<screenX && mouseY<0.09*screenY && screen == 2){
+    screen = 1;
+    // Bouton launch
   }
 
 }
