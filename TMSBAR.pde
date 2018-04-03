@@ -190,13 +190,14 @@ void draw () {
    text("Il reste : "+mTimeLeft+"m"+sTimeLeft+"s", 0, screenY*0.3);}
    else{text("Il reste : "+hTimeLeft+"H "+mTimeLeft+"m"+sTimeLeft+"s", 0, screenY*0.3);}
 
-  prochaineSonnerie = 72060; ///////////////LIGNE POUR DEBUG après 18h sans déregler l'heure de son pc (ajoute une sonnerie (en secondes écoulées depuis minuit))////////////////////////////////////
+  // prochaineSonnerie = 72060; ///////////////LIGNE POUR DEBUG après 18h sans déregler l'heure de son pc (ajoute une sonnerie (en secondes écoulées depuis minuit))////////////////////////////////////
    rectMode(CORNER);
    fill(255);
    rect(0.05*screenX-1, 0.80*screenY-1, 0.89*screenX+2, 0.11*screenY+2);
    fill(#00E8FF);
    noStroke();
-   float f = 0.89-0.05;
+   float f = 0.89;
+   //pourcentCours = 99;
    f=(pourcentCours/100)*f;
    rect(0.05*screenX, 0.80*screenY, f*screenX, 0.11*screenY);
    stroke(0);
