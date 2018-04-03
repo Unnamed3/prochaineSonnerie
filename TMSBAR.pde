@@ -27,8 +27,8 @@ int typeSn=0;
 public static String OS = System.getProperty("os.name").toLowerCase();
 
 void setup () {
- //size(displayWidth, displayHeight);
- size(1280,720);
+ size(displayWidth, displayHeight); // résolution automatique
+ size(1280,720); //tester la résolution d'écran de son choix
  screenX=width;
  screenY=height;
  
