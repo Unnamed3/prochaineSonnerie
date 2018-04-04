@@ -28,7 +28,7 @@ public static String OS = System.getProperty("os.name").toLowerCase();
 
 void setup () {
  size(displayWidth, displayHeight); // résolution automatique
- size(1280,720); //tester la résolution d'écran de son choix
+ //size(1280,720); //tester la résolution d'écran de son choix
  screenX=width;
  screenY=height;
  
@@ -168,7 +168,7 @@ void draw () {
    textSize (0.0765*screenY);
    textAlign (LEFT,TOP);
    text("Heure "+hour()+":"+minute()+":"+second()+" ("+heurSecondes+"s)", 0, 0);
-   text("Prochaine sonnerie à : "+prochaineSonnerie+" ("+hProchaineSonnerie+"h"+mProchaineSonnerie+"m"+sProchaineSonnerie+"s)", 0, screenY*0.1);
+   text("Prochaine sonnerie à : "+hProchaineSonnerie+"h"+mProchaineSonnerie+"m"+sProchaineSonnerie+"s", 0, screenY*0.1);
    text(intercours[typeSn], 0, screenY*0.2);
    
    a = hour(); b = minute(); c = second();
