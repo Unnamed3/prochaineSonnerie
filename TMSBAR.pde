@@ -8,7 +8,7 @@ int SS = -140;
 int SStemp = 0;
 String[] loadfile;
 int screen = 1;
-String[]intercours = {"(Début / fin cours)", "(Retard)", "(Recré)","(Fin de la récré)","(Fin des cours)"};
+String[] intercours = {"(Début / fin cours)", "(Retard)", "(Recré)","(Fin de la récré)","(Fin des cours)"};
 int heurSecondes = 0;
 int prochaineSonnerie = 0;
 int sProchaineSonnerie = 0;
