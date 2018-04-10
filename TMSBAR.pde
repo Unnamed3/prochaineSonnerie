@@ -35,9 +35,15 @@ void setup () {
 
 
  if(OS.equalsIgnoreCase("linux")){
-   loadfile = loadStrings("/storage/emulated/0/SS.var");
-   String SSstring = loadfile[0];
-   SS = parseInt(SSstring);
+   try {
+     loadfile = loadStrings("/storage/emulated/0/SS.var");
+     String SSstring = loadfile[0];
+     SS = parseInt(SSstring);
+   } catch(Exception e) {
+     String[] var = {"0"};
+     saveStrings("/storage/emulated/0/SS.var", var);
+   }
+   
  }
 
 }
