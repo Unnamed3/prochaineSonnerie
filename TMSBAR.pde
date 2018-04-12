@@ -173,7 +173,7 @@ void draw () {
    text("Back", screenX*0.975, screenY*0.0444);
    textSize (0.0765*screenY);
    textAlign (LEFT,TOP);
-   text("Heure "+hour()+":"+minute()+":"+second()+" ("+heurSecondes+"s)", 0, 0);
+   text("Heure "+hour()+":"+minute()+":"+second(), 0, 0);
    text("Prochaine sonnerie à : "+hProchaineSonnerie+"h"+mProchaineSonnerie+"m"+sProchaineSonnerie+"s", 0, screenY*0.1);
    text(intercours[typeSn], 0, screenY*0.2);
    
