@@ -22,10 +22,12 @@ public static String OS = System.getProperty("os.name").toLowerCase();
 
 
 void setup () {
+ // size(1280,720); //tester la résolution d'écran de son choix
+
 
    if (OS.equalsIgnoreCase("linux")) {
-    size(1280,720); //tester la résolution d'écran de son choix
-    
+    size(displayWidth, displayHeight);
+
       try {
       loadfile = loadStrings("/storage/emulated/0/SS.var");
       String SSstring = loadfile[0];
@@ -37,8 +39,8 @@ void setup () {
 
   }
   
-  else if(OS.contains("windows")){
-  surface.setSize(displayWidth/3, displayHeight/3);
+  else if(OS.equalsIgnoreCase("windows 7")){
+  size(displayWidth/3, displayHeight/3);
   }
   screenX = width;
   screenY = height;
@@ -51,6 +53,7 @@ void setup () {
 
 void draw () {
 
+  // L'écran de fin des cours qui s'affiche lorsque le scan de la sonnerie suivante arrive au bout
   if (screen == 404) {
     screen = 404;
 
@@ -78,7 +81,7 @@ void draw () {
     }
   }
 
-
+// Ecran d'accueil au lancement de l'application
   if (screen == 1) {
     background(204);
 
@@ -106,15 +109,6 @@ void draw () {
 
 
   if (screen == 3) {  //setup screen
-    /*
-   background (0);
-     fill(255);
-     textAlign(CENTER, CENTER);
-     text("Future function", screenX/2, screenY/2);
-     delay(500);
-     if (mousePressed){
-     screen = 1;
-     */
 
     background(255);
 
@@ -144,6 +138,8 @@ void draw () {
     fill(0);
     textAlign(CENTER, CENTER);
 
+    text("Configurer le calibrage", midX, screenY*0.10);
+    text("des sonneries", midX, screenY*0.20);
     text("Back", screenX*0.35, screenY*0.82);
     text("Save", screenX*0.65, screenY*0.82);
     text("-10", screenX*0.10, midY);
@@ -428,10 +424,18 @@ void mouseReleased() {
 
   if (mouseX>0.509375*screenX && mouseY>screenY*0.7194 && mouseX<screenX*0.790625 && mouseY<0.9194*screenY && screen == 3) {
 
+
+    
+    
+    if (OS.equalsIgnoreCase("linux")) {
     SS = SStemp;
     loadfile[0] = str(SS);
     saveStrings("/storage/emulated/0/SS.var", loadfile);
     // BOUTON Save
+
+  }
+    else{SS = SStemp;}
+    
   }
 
   if (mouseX>0.95*screenX && mouseY>0 && mouseX<screenX && mouseY<0.09*screenY && screen == 2) {
@@ -440,8 +444,6 @@ void mouseReleased() {
   }
 }
 
-
-
 void fHighlight(int X){ //fonction highlight
       if (highlight == true && highlightID == X) {
       fill(127);
@@ -449,3 +451,4 @@ void fHighlight(int X){ //fonction highlight
       fill (255);
     }
   }
+  
