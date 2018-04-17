@@ -22,12 +22,10 @@ public static String OS = System.getProperty("os.name").toLowerCase();
 
 
 void setup () {
- // size(1280,720); //tester la résolution d'écran de son choix
-
 
    if (OS.equalsIgnoreCase("linux")) {
-    surface.setSize(displayWidth, displayHeight);
-
+    size(1280,720); //tester la résolution d'écran de son choix
+    
       try {
       loadfile = loadStrings("/storage/emulated/0/SS.var");
       String SSstring = loadfile[0];
