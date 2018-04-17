@@ -427,7 +427,8 @@ void mouseReleased() {
 
     
     
-    if (OS.equalsIgnoreCase("linux")) {
+    if (OS.equalsIgnoreCase("linux")) {
+
     SS = SStemp;
     loadfile[0] = str(SS);
     saveStrings("/storage/emulated/0/SS.var", loadfile);
