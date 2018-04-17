@@ -39,7 +39,7 @@ void setup () {
 
   }
   
-  else if(OS.equalsIgnoreCase("windows 7")){
+  else if(OS.contains("windows")){
   surface.setSize(displayWidth/3, displayHeight/3);
   }
   screenX = width;
