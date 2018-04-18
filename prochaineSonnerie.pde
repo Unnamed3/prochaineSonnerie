@@ -29,17 +29,17 @@ void setup () {
     size(displayWidth, displayHeight);
 
       try {
-      loadfile = loadStrings("/storage/emulated/0/SS.var");
+      loadfile = loadStrings("/storage/emulated/0/prochaineSonnerie.conf");
       String SSstring = loadfile[0];
       SS = parseInt(SSstring);
     } catch(Exception e) {
       String[] var = {"0"};
-      saveStrings("/storage/emulated/0/SS.var", var);
+      saveStrings("/storage/emulated/0/prochaineSonnerie.conf", var);
     }
 
   }
   
-  else if(OS.equalsIgnoreCase("windows 7")){
+  else if(OS.contains("windows")){
   size(displayWidth/3, displayHeight/3);
   }
   screenX = width;
@@ -87,7 +87,7 @@ void draw () {
 
     textSize (0.0765*screenY);
     textAlign(CENTER, CENTER);
-    text("Bienvenue sur TMSBAR", midX, 0.07*screenY);
+    text("Bienvenue sur prochaineSonnerie", midX, 0.07*screenY);
 
     rectMode(CENTER);
     fill(255);
@@ -381,12 +381,12 @@ void mouseReleased() {
 
   if (mouseX>0.1*screenX && mouseY>screenY*0.2333 && mouseX<screenX*0.4 && mouseY<0.725*screenY && screen == 1) {
     configTMS();
-    screen = 2;
+    callScreen (2);
     // Bouton launch
   }
 
   if (mouseX>0.6*screenX && mouseY>screenY*0.13125 && mouseX<screenX*0.9 && mouseY<0.77*screenY && screen == 1) {
-    screen = 3;
+   callScreen (3);
     SStemp = SS;
     mouseX=0;
     mouseY=0;
@@ -394,31 +394,31 @@ void mouseReleased() {
   }
 
   if (mouseX>0.275*screenX && mouseY>screenY*0.1 && mouseX<screenX*0.725 && mouseY<0.3*screenY && screen == 404) {
-    screen = 1;
+    callScreen (1);
     // Bouton back de tu n'est pas au lycée
   }
 
   if (mouseX>0.015625*screenX && mouseY>screenY*0.35 && mouseX<screenX*0.184375 && mouseY<0.65*screenY && screen == 3) {
-    SStemp = SStemp-10;
+    SStemp-=10;
   }
 
   if (mouseX>0.215625*screenX && mouseY>screenY*0.35 && mouseX<screenX*0.384375 && mouseY<0.65*screenY && screen == 3) {   
-    SStemp = SStemp-1;
+    SStemp-=1;
     // BOUTON -1
   }
 
   if (mouseX>0.615625*screenX && mouseY>screenY*0.35 && mouseX<screenX*0.784375 && mouseY<0.65*screenY && screen == 3) {
-    SStemp = SStemp+1;
+    SStemp+=1;
     // BOUTON +1
   }
 
   if (mouseX>0.815625*screenX && mouseY>screenY*0.35 && mouseX<screenX*0.984375 && mouseY<0.65*screenY && screen == 3) {
-    SStemp = SStemp+10;
+    SStemp+=10;
     // BOUTON +10
   }
 
   if (mouseX>0.209375*screenX && mouseY>screenY*0.7194 && mouseX<screenX*0.490625 && mouseY<0.9194*screenY && screen == 3) {
-    screen = 1;
+    callScreen (1);
     // BOUTON Back
   }
 
@@ -430,7 +430,7 @@ void mouseReleased() {
     if (OS.equalsIgnoreCase("linux")) {
     SS = SStemp;
     loadfile[0] = str(SS);
-    saveStrings("/storage/emulated/0/SS.var", loadfile);
+    saveStrings("/storage/emulated/0/prochaineSonnerie.conf", loadfile);
     // BOUTON Save
 
   }
@@ -439,7 +439,7 @@ void mouseReleased() {
   }
 
   if (mouseX>0.95*screenX && mouseY>0 && mouseX<screenX && mouseY<0.09*screenY && screen == 2) {
-    screen = 1;
+    callScreen(1);
     // Bouton launch
   }
 }
@@ -452,3 +452,8 @@ void fHighlight(int X){ //fonction highlight
     }
   }
   
+void callScreen (int s){
+  
+  screen = s;
+  
+}
