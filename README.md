@@ -1,3 +1,3 @@
 # prochaineSonnerie
 Vous pouvez suggérer des nouvelles fonctions dans projects
-Pour que le programme fonctionne (sur Android) vous devez avoir un fichier "SS.var" à la racine de votre stockage interne.
+Ce programme a besoin de l'autorisation de créer des fichiers sur Android. Le fichier "prochaineSonnerie.conf" sera créé s'il n'existe pas.
