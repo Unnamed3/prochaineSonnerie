@@ -427,7 +427,8 @@ void mouseReleased() {
 
     
     
-    if (OS.equalsIgnoreCase("linux")) {
+    if (OS.equalsIgnoreCase("linux")) {
+
     SS = SStemp;
     loadfile[0] = str(SS);
     saveStrings("/storage/emulated/0/prochaineSonnerie.conf", loadfile);
@@ -456,4 +457,12 @@ void callScreen (int s){
   
   screen = s;
   
+}
+
+void keyPressed() {
+  if(keyCode==4) {
+    if(screen==2||screen==3) {
+      callScreen(1);
+    }
+  }
 }
