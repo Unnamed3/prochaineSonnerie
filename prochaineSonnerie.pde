@@ -465,4 +465,6 @@ void keyPressed() {
       callScreen(1);
     }
   }
+  keyCode = 0;
+  key = 0;
 }
