@@ -40,8 +40,18 @@ void setup () {
   }
   
   else if(OS.contains("windows")){
-  size(displayWidth/3, displayHeight/3);
-  }
+  surface.setSize(displayWidth/3, displayHeight/3);
+
+ try {
+      loadfile = loadStrings("prochaineSonnerie.conf");
+      String SSstring = loadfile[0];
+      SS = parseInt(SSstring);
+    } catch(Exception e) {
+      String[] var = {"0"};
+      saveStrings("prochaineSonnerie.conf", var);
+    }  
+
+}
   screenX = width;
   screenY = height;
   midX = screenX*0.5;
@@ -435,6 +445,12 @@ void mouseReleased() {
     // BOUTON Save
 
   }
+  else if(OS.contains("windows")){
+    surface.setSize(displayWidth/3, displayHeight/3);
+    SS = SStemp;
+    loadfile[0] = str(SS);
+    saveStrings("prochaineSonnerie.conf", loadfile);
+}
     else{SS = SStemp;}
     
   }
