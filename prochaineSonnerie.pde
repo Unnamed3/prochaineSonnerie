@@ -20,9 +20,10 @@ int typeSn=0;
 
 public static String OS = System.getProperty("os.name").toLowerCase();
 
+boolean TimeleftFullscreen = false;
 
 void setup () {
- // size(1280,720); //tester la résolution d'écran de son choix
+  size(1280,720); //tester la résolution d'écran de son choix
 
 
    if (OS.equalsIgnoreCase("linux")) {
@@ -40,6 +41,10 @@ void setup () {
   }
   
   else if(OS.contains("windows")){
+
+  //size(displayWidth/3, displayHeight/3);
+  }
+
   surface.setSize(displayWidth/3, displayHeight/3);
 
  try {
@@ -51,7 +56,6 @@ void setup () {
       saveStrings("prochaineSonnerie.conf", var);
     }  
 
-}
   screenX = width;
   screenY = height;
   midX = screenX*0.5;
@@ -164,6 +168,44 @@ void draw () {
 
 
   if (screen == 2) {  //ecran affichage heure
+  if (TimeleftFullscreen){
+    background(0);
+    if(mousePressed){
+      mouseX = 0; mouseY = 0;
+      TimeleftFullscreen = false;
+    }
+    a = hour(); 
+    b = minute(); 
+    c = second();
+    b = a*60+b; 
+    c = b*60+c; // convertir heure actuelle en secondes écoulées depuis minuit
+    heurSecondes = c;
+
+    timeLeft = prochaineSonnerie - heurSecondes; // le temps restant (en secondes) est la différence entre la prochaine sonnerie et l'heure actuelle
+    
+    float d = (float)timeLeft/60; // convertir en minutes...
+    mTimeLeft = floor (d); //... puis mettre dans la variable d
+    
+    float partDecd = (float)(d-(floor(d))); //extraire la partie décimale de la variable d
+    sTimeLeft = (int)(partDecd*60);
+    
+    float e = partDecd*60;
+    sTimeLeft = round(e);
+
+    hTimeLeft = timeLeft/3600; 
+
+    fill(255);
+    if (hTimeLeft == 0) {
+      textSize (0.4*screenY);
+      text("Time left", midX, screenY*0.2);
+      text(mTimeLeft+"m"+sTimeLeft+"s", midX, screenY*0.7);
+      textSize (0.45*screenY);
+    } else {
+      text(hTimeLeft+"H "+mTimeLeft+"m"+sTimeLeft+"s", 0.05*screenX, screenY*0.4);
+    }
+  
+}
+else{
 
     background (255);
 
@@ -240,7 +282,7 @@ void draw () {
     textAlign(CENTER, CENTER);
     text("Progression du cours : " + pourcentCours_+"%", midX, 0.7*screenY);
 
-
+}
 
     //line(screenX*0.5,screenY*0.7, screenX*0.5, screenY*0.8); // ligne pour vérifier si le 50% de la progressbar fonctionne correctement
 
@@ -248,8 +290,8 @@ void draw () {
       configTMS();
     }
   }
-}
 
+}
 
 
 
@@ -318,7 +360,15 @@ void configTMS() {
 
 
 void mousePressed() {
-  highlight = true; 
+  highlight = true;
+  
+    if (mouseX>0.047*screenX && mouseY>0.403 && mouseX<screenX*0.383 && mouseY<0.486*screenY && screen == 2) {
+    TimeleftFullscreen = true;
+    mouseX = 0;
+    mouseY = 0;
+    mousePressed = false;
+    // Bouton fullscreen
+  }
   
   if (mouseX>0.1*screenX && mouseY>screenY*0.2333 && mouseX<screenX*0.4 && mouseY<0.725*screenY && screen == 1) {
     highlightID = 1;
@@ -381,10 +431,6 @@ void mousePressed() {
 
 
 
-
-
-
-
 void mouseReleased() {
   highlightID = 0;
   highlight = false;
@@ -404,7 +450,7 @@ void mouseReleased() {
   }
 
   if (mouseX>0.275*screenX && mouseY>screenY*0.1 && mouseX<screenX*0.725 && mouseY<0.3*screenY && screen == 404) {
-    callScreen (1);
+    callScreen(1);
     // Bouton back de tu n'est pas au lycée
   }
 
@@ -434,8 +480,6 @@ void mouseReleased() {
 
   if (mouseX>0.509375*screenX && mouseY>screenY*0.7194 && mouseX<screenX*0.790625 && mouseY<0.9194*screenY && screen == 3) {
 
-
-    
     
     if (OS.equalsIgnoreCase("linux")) {
 
