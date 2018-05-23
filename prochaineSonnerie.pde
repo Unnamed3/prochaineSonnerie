@@ -362,7 +362,7 @@ void configTMS() {
 void mousePressed() {
   highlight = true;
   
-    if (mouseX>0.047*screenX && mouseY>0.403 && mouseX<screenX*0.383 && mouseY<0.486*screenY && screen == 2) {
+    if (mouseX>0.047*screenX && mouseY>screenY*0.403 && mouseX<screenX*0.383 && mouseY<0.486*screenY && screen == 2) {
     TimeleftFullscreen = true;
     mouseX = 0;
     mouseY = 0;
