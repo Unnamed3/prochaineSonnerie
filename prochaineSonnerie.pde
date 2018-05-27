@@ -2,7 +2,7 @@ boolean highlight = false;
 int highlightID = 0;
 int screenX = 0, screenY = 0;
 float midX, midY; //milieu d ecran
-int[] Lsonne = {0, 29100, 29400, 32700, 33100, 36000, 36600, 36900, 40200, 40500, 43500, 43800, 46800, 47100, 49800, 50100, 53400, 53700, 56700, 57300, 57600, 60900, 61200, 64200, 0, 0};
+int[] Lsonne = {0, 29100, 29400, 32700, 33100, 36000, 36600, 36900, 40200, 40500, 43500, 43800, 46800, 47100, 49800, 50100, 53400, 53700, 56700, 57300, 57600, 60900, 61200, 64200, 80000, 0};
 //8h05 = 29 100s | 8h10 = 29 400 | 9h05 = 32 700 | 9h10 = 33 000 | 10h = 36 000 |10h10 = 36 600|10h15 = 36 900|11h = 39 600|11h15 = 40 500|12h05 = 43 500|12h10 = 43 800|13h = 46 800|13h05 = 47 100|13h50 = 49 800|13h55 = 50 100|14h50 = 53 400|14h55 = 53 700|15h45 = 56 700|15h55 = 57 300|16h = 57 600|16h55 = 60 900|17h = 61 200|17h50 = 64 200
 int calibrage = -170, calibrageUnsaved = 0;
 String[] loadfile;
@@ -23,7 +23,7 @@ public static String OS = System.getProperty("os.name").toLowerCase();
 boolean TimeleftFullscreen = false;
 
 void setup () {
-//  size(480,800); //tester la résolution d'écran de son choix (pour le dev sur PC)
+  size(1280,720); //tester la résolution d'écran de son choix
 
 
    if (OS.equalsIgnoreCase("linux")) {
@@ -39,7 +39,10 @@ void setup () {
     }
 
   }
-  else if(OS.contains("windows")){  
+  else if(OS.contains("windows")){
+
+  //size(displayWidth/3, displayHeight/3);
+  
   surface.setSize(displayWidth/3, displayHeight/3);
 
  try {
@@ -117,7 +120,7 @@ void draw () {
     // triangle(screenX/4+40, screenY/2+15, screenX/4+40, screenY/2+110, screenX/4+90, ((screenY/2+15)+(screenY/2+110))/2);
     //saveStrings("calibrage.txt", calibrage);
   }
-  
+
 
   if (screen == 3) {  //setup screen
 
@@ -196,12 +199,9 @@ void draw () {
       textSize (0.4*screenY);
       text("Time left", midX, screenY*0.2);
       text(mTimeLeft+"m"+sTimeLeft+"s", midX, screenY*0.7);
+      textSize (0.45*screenY);
     } else {
-      textSize (0.4*screenY);
-      text("Time left", midX, screenY*0.2);
-      textSize (0.3*screenY);
-      text(hTimeLeft+"h "+mTimeLeft+"m"+sTimeLeft+"s", midX, screenY*0.7);
-      
+      text(hTimeLeft+"H "+mTimeLeft+"m"+sTimeLeft+"s", 0.05*screenX, screenY*0.4);
     }
   
 }
@@ -248,7 +248,7 @@ else{
     if (hTimeLeft == 0) {
       text("Il reste : "+mTimeLeft+"m"+sTimeLeft+"s", 0.05*screenX, screenY*0.4);
     } else {
-      text("Il reste : "+hTimeLeft+"h "+mTimeLeft+"m"+sTimeLeft+"s", 0.05*screenX, screenY*0.4);
+      text("Il reste : "+hTimeLeft+"H "+mTimeLeft+"m"+sTimeLeft+"s", 0.05*screenX, screenY*0.4);
     }
 
     fill(255);
@@ -290,57 +290,6 @@ else{
       configTMS();
     }
   }
-
-    //Always on display SΛMSUNG
-  if (screenX < screenY) {
-
-screen = 2;
-
-    background(0);
-    fill(255);
-    textAlign(CENTER, CENTER);
-
-
-    textSize(screenX*0.3);
-
-    if (hour()<10) {
-      text("0"+hour(), midX, midY*0.6);
-    } else {
-      text(hour(), midX, midY*0.6);
-    }
-
-    if (minute()<10) {
-      text("0"+minute(), midX, midY*0.9);
-    } else {
-      text(minute(), midX, midY*0.9);
-    }
-
-
-
-    textSize(screenX*0.05);
-    if (timeLeft >=0){
-    text("Prochaine sonnerie :", midX, midY*1.15);
-
-
-    textSize(screenX*0.06);
-
-    if (hTimeLeft == 0) {
-      text(mTimeLeft+"m"+sTimeLeft+"s", midX, midY*1.25);
-    } else {
-      text(hTimeLeft+"h "+mTimeLeft+"m"+sTimeLeft+"s", midX, midY*1.25);
-    }
-
-    if (heurSecondes > prochaineSonnerie) {
-      configTMS();
-    }
-    
-  }else{
-    text("Fin des cours", midX, midY*1.15);
-    textSize(screenX*0.06);
-  }
-
-  }
-  
 
 }
 
@@ -413,7 +362,7 @@ void configTMS() {
 void mousePressed() {
   highlight = true;
   
-    if (mouseX>0.047*screenX && mouseY>screenY*0.403 && mouseX<screenX*0.383 && mouseY<0.486*screenY && screen == 2) {
+    if (mouseX>0.047*screenX && mouseY>0.403 && mouseX<screenX*0.383 && mouseY<0.486*screenY && screen == 2) {
     TimeleftFullscreen = true;
     mouseX = 0;
     mouseY = 0;
@@ -576,8 +525,4 @@ void keyPressed() {
   }
   keyCode = 0;
   key = 0;
-}
-void calculs(){
-  
-  
 }
