@@ -1,8 +1,8 @@
-int thisVersion = 1;
+int thisVersion = 0;
 String[] verCheckLoad;
 int verChecked = 0;
 boolean CFUerror = false;
-String CFUurl = "https://raw.githubusercontent.com/Unnamed3/CFUtest/master/prochaineSonnerie.version";
+String CFUurl = "https://raw.githubusercontent.com/Unnamed3/prochaineSonnerie/master/prochaineSonnerie.version";
 
 
 boolean highlight = false;
