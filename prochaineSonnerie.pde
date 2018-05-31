@@ -2,9 +2,9 @@ boolean highlight = false;
 int highlightID = 0;
 int screenX = 0, screenY = 0;
 float midX, midY; //milieu d ecran
-int[] Lsonne = {0, 29100, 29400, 32700, 33100, 36000, 36600, 36900, 40200, 40500, 43500, 43800, 46800, 47100, 49800, 50100, 53400, 53700, 56700, 57300, 57600, 60900, 61200, 64200, 0, 0};
+int[] Lsonne = {0, 29100, 29400, 32700, 33100, 36000, 36600, 36900, 40200, 40500, 43500, 43800, 46800, 47100, 49800, 50100, 53400, 53700, 56700, 57300, 57600, 60900, 61200, 64200, 80000, 0};
 //8h05 = 29 100s | 8h10 = 29 400 | 9h05 = 32 700 | 9h10 = 33 000 | 10h = 36 000 |10h10 = 36 600|10h15 = 36 900|11h = 39 600|11h15 = 40 500|12h05 = 43 500|12h10 = 43 800|13h = 46 800|13h05 = 47 100|13h50 = 49 800|13h55 = 50 100|14h50 = 53 400|14h55 = 53 700|15h45 = 56 700|15h55 = 57 300|16h = 57 600|16h55 = 60 900|17h = 61 200|17h50 = 64 200
-int calibrage = -170, calibrageUnsaved = 0;
+int calibrage = 0, calibrageUnsaved = 0;
 String[] loadfile;
 int screen = 1;
 String[]intercours = {"(Début / fin cours)", "(Intercours)", "(Recré)", "(Fin de la récré)", "(Fin des cours)"};
@@ -17,38 +17,39 @@ float pourcentCours = 0;
 int pourcentCoursInt = 0;
 float pourcentCours_ = 0;
 int typeSn=0;
-
+String path = "/storage/emulated/0/prochaineSonnerie.conf";
+String rPath = "prochaineSonnerie.conf";
 public static String OS = System.getProperty("os.name").toLowerCase();
 
 boolean TimeleftFullscreen = false;
 
 void setup () {
-//  size(480,800); //tester la résolution d'écran de son choix (pour le dev sur PC)
+  size(1280,720); //tester la résolution d'écran de son choix (pour le dev sur PC)
 
 
    if (OS.equalsIgnoreCase("linux")) {
     size(displayWidth, displayHeight);
 
       try {
-      loadfile = loadStrings("/storage/emulated/0/prochaineSonnerie.conf");
+      loadfile = loadStrings(path);
       String calibragestring = loadfile[0];
       calibrage = parseInt(calibragestring);
     } catch(Exception e) {
       String[] var = {"0"};
-      saveStrings("/storage/emulated/0/prochaineSonnerie.conf", var);
+      saveStrings(path, var);
     }
 
   }
   else if(OS.contains("windows")){  
-  surface.setSize(displayWidth/3, displayHeight/3);
+//  surface.setSize(displayWidth/3, displayHeight/3);
 
  try {
-      loadfile = loadStrings("prochaineSonnerie.conf");
+      loadfile = loadStrings(rPath);
       String calibragestring = loadfile[0];
       calibrage = parseInt(calibragestring);
     } catch(Exception e) {
       String[] var = {"0"};
-      saveStrings("prochaineSonnerie.conf", var);
+      saveStrings(rPath, var);
     }  
 
   }
@@ -150,7 +151,7 @@ void draw () {
     textAlign(CENTER, CENTER);
 
     text("Configurer le calibrage", midX, screenY*0.10);
-    text("des sonneries", midX, screenY*0.20);
+    text("des sonneries", midX, screenY*0.20); 
     text("Back", screenX*0.35, screenY*0.82);
     text("Save", screenX*0.65, screenY*0.82);
     text("-10", screenX*0.10, midY);
@@ -215,9 +216,8 @@ else{
     stroke (0);
     rect(screenX*0.94, screenX*0.01, screenX*0.05, screenX*0.05); // bouton retour affiché en haut à droite
     fill(0);
-    textSize (0.04*screenY);
-    text("Back", screenX*0.94+((screenX-screenX*0.94)/2), screenX*0.01+(screenX*0.01)/2);
-
+    textSize (0.03*screenY);
+    text("Back", screenX*0.965, screenY*0.05972);
     textSize (0.0765*screenY);
     textAlign (LEFT, TOP);
     text("Heure "+hour()+":"+minute()+":"+second(), 0.05*screenX, screenY*0.1);
@@ -421,8 +421,9 @@ void mousePressed() {
     // Bouton fullscreen
   }
   
-  if (mouseX>0.1*screenX && mouseY>screenY*0.2333 && mouseX<screenX*0.4 && mouseY<0.725*screenY && screen == 1) {
+  if (mouseX>0.1*screenX && mouseY>screenY*0.2333 && mouseX<screenX*0.4 && mouseY<0.766*screenY && screen == 1) {
     highlightID = 1;
+    //highlight bouton launch
   }
 
   if (mouseX>0.015625*screenX && mouseY>screenY*0.35 && mouseX<screenX*0.184375 && mouseY<0.65*screenY && screen == 3) {
@@ -475,8 +476,9 @@ void mousePressed() {
    6 = bouton Save
    */
 
-  if (mouseX>0.6*screenX && mouseY>screenY*0.35 && mouseX<screenX*0.9 && mouseY<0.77*screenY && screen == 1) {
+ if (mouseX>0.6*screenX && mouseY>screenY*0.2333 && mouseX<screenX*0.9 && mouseY<0.77*screenY && screen == 1) {
     highlightID = 2;
+    // highlight config
   }
 }
 
@@ -486,13 +488,13 @@ void mouseReleased() {
   highlightID = 0;
   highlight = false;
 
-  if (mouseX>0.1*screenX && mouseY>screenY*0.2333 && mouseX<screenX*0.4 && mouseY<0.725*screenY && screen == 1) {
+  if (mouseX>0.1*screenX && mouseY>screenY*0.2333 && mouseX<screenX*0.4 && mouseY<0.766*screenY && screen == 1) {
     configTMS();
     callScreen (2);
     // Bouton launch
   }
 
-  if (mouseX>0.6*screenX && mouseY>screenY*0.13125 && mouseX<screenX*0.9 && mouseY<0.77*screenY && screen == 1) {
+  if (mouseX>0.6*screenX && mouseY>screenY*0.2333 && mouseX<screenX*0.9 && mouseY<0.77*screenY && screen == 1) {
    callScreen (3);
     calibrageUnsaved = calibrage;
     mouseX=0;
@@ -535,22 +537,23 @@ void mouseReleased() {
     if (OS.equalsIgnoreCase("linux")) {
     calibrage = calibrageUnsaved;
     loadfile[0] = str(calibrage);
-    saveStrings("/storage/emulated/0/prochaineSonnerie.conf", loadfile);
+    saveStrings(path, loadfile);
     // BOUTON Save
 
   }
   else if(OS.contains("windows")){
     calibrage = calibrageUnsaved;
     loadfile[0] = str(calibrage);
-    saveStrings("prochaineSonnerie.conf", loadfile);
+    saveStrings(rPath, loadfile);
 }
     else{calibrage = calibrageUnsaved;}
     
   }
 
-  if (mouseX>0.95*screenX && mouseY>0 && mouseX<screenX && mouseY<0.09*screenY && screen == 2) {
+
+  if (mouseX>0.9398*screenX && mouseY>0 && mouseX<screenX && mouseY<0.1055*screenY && screen == 2) {
     callScreen(1);
-    // Bouton launch
+    // Bouton back de prochaineSonnerie screen
   }
 }
 
