@@ -9,7 +9,7 @@ boolean highlight = false;
 int highlightID = 0;
 int screenX = 0, screenY = 0;
 float midX, midY; //milieu d ecran
-int[] Lsonne = {0, 29100, 29400, 32700, 33100, 36000, 36600, 36900, 40200, 40500, 43500, 43800, 46800, 47100, 49800, 50100, 53400, 53700, 56700, 57300, 57600, 60900, 61200, 64200, 80000, 0};
+int[] Lsonne = {0, 29100, 29400, 32700, 33100, 36000, 36600, 36900, 40200, 40500, 43500, 43800, 46800, 47100, 49800, 50100, 53400, 53700, 56700, 57300, 57600, 60900, 61200, 64200, 0, 0};
 //8h05 = 29 100s | 8h10 = 29 400 | 9h05 = 32 700 | 9h10 = 33 000 | 10h = 36 000 |10h10 = 36 600|10h15 = 36 900|11h = 39 600|11h15 = 40 500|12h05 = 43 500|12h10 = 43 800|13h = 46 800|13h05 = 47 100|13h50 = 49 800|13h55 = 50 100|14h50 = 53 400|14h55 = 53 700|15h45 = 56 700|15h55 = 57 300|16h = 57 600|16h55 = 60 900|17h = 61 200|17h50 = 64 200
 int calibrage = 0, calibrageUnsaved = 0;
 String[] loadfile;
@@ -31,7 +31,7 @@ public static String OS = System.getProperty("os.name").toLowerCase();
 boolean TimeleftFullscreen = false;
 
 void setup () {
-  size(1280, 720); //tester la résolution d'écran de son choix (pour le dev sur PC)
+//  size(1280, 720); //tester la résolution d'écran de son choix (pour le dev sur PC)
 
 
   if (OS.equalsIgnoreCase("linux")) {
