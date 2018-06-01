@@ -1,6 +1,6 @@
-String thisVersion = "v1.1r";
+String thisVersion = "v1r";
 String[] verCheckLoad;
-String verChecked ="" ;
+String verChecked = "";
 boolean CFUerror = false;
 String CFUurl = "https://raw.githubusercontent.com/Unnamed3/prochaineSonnerie/master/prochaineSonnerie.version";
 
@@ -67,14 +67,11 @@ void setup () {
 
   try {
     verCheckLoad = loadStrings(CFUurl);
-    verChecked = parseInt(verCheckLoad[0]);
+    
+    verChecked = verCheckLoad[0];
   } 
   catch(Exception e) {
     CFUerror = true;
-  }
-  if(!CFUerror) {
-    saveBytes("/storage/emulated/0/Download/prochaineSonnerie.apk" , loadBytes("https://github.com/Unnamed3/prochaineSonnerie/releases/download/"+verChecked+"/base.apk" ));
-    //launch("/storage/emulated/0/Download/prochaineSonnerie.apk");
   }
 }
 
@@ -82,6 +79,7 @@ void setup () {
 
 
 void draw () {
+  text(verCheckLoad[0],midX,midY);
   fill(0);
   // L'écran de fin des cours qui s'affiche lorsque le scan de la sonnerie suivante arrive au bout
   if (screen == 404) {
@@ -145,10 +143,10 @@ void draw () {
     }
       if (!CFUerror) {
          fill(0, 255, 0);
-        if (verChecked == thisVersion) {
+        if (verChecked.equals(thisVersion)) {
           text("You are up to date ("+thisVersion+")", midX, screenY*0.87);
         }
-        if (verChecked != thisVersion)
+        else
         {
           text("New version available ! (n°"+verCheckLoad[0]+")\nYou have : "+thisVersion, midX, screenY*0.87);
         }
@@ -622,3 +620,4 @@ void draw () {
   }
   void calculs() {
   }
+ 
