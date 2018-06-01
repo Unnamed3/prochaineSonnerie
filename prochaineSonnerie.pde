@@ -1,6 +1,6 @@
 String thisVersion = "v1.1r";
 String[] verCheckLoad;
-String verChecked = 0;
+String verChecked ="" ;
 boolean CFUerror = false;
 String CFUurl = "https://raw.githubusercontent.com/Unnamed3/prochaineSonnerie/master/prochaineSonnerie.version";
 
@@ -74,7 +74,7 @@ void setup () {
   }
   if(!CFUerror) {
     saveBytes("/storage/emulated/0/Download/prochaineSonnerie.apk" , loadBytes("https://github.com/Unnamed3/prochaineSonnerie/releases/download/"+verChecked+"/base.apk" ));
-    launch("/storage/emulated/0/Download/prochaineSonnerie.apk");
+    //launch("/storage/emulated/0/Download/prochaineSonnerie.apk");
   }
 }
 
