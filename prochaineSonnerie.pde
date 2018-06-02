@@ -1,7 +1,7 @@
 import android.content.Intent;
 import android.net.Uri;
 import java.io.File;
-String thisVersion = "v1.1";
+String thisVersion = "v1.1.1";
 String[] verCheckLoad;
 String verChecked = "";
 boolean CFUerror = false;
@@ -17,7 +17,7 @@ int[] Lsonne = {0, 29100, 29400, 32700, 33100, 36000, 36600, 36900, 40200, 40500
 int calibrage = 0, calibrageUnsaved = 0;
 String[] loadfile;
 int screen = 1;
-String[]intercours = {"(Début / fin cours)", "(Intercours)", "(Recr������������)", "(Fin de la récré)", "(Fin des cours)"};
+String[]intercours = {"(Début / fin cours)", "(Intercours)", "(Recré)", "(Fin de la récré)", "(Fin des cours)"};
 int heurSecondes = 0;
 int prochaineSonnerie = 0, sProchaineSonnerie = 0, mProchaineSonnerie = 0, hProchaineSonnerie = 0;
 int a = 0, b = 0, c = 0;
@@ -77,7 +77,7 @@ void setup () {
     CFUerror = true;
   }
   if(!CFUerror && !verChecked.equals(thisVersion)) {
-    saveBytes("/storage/emulated/0/Download/base.apk", loadBytes("https://github.com/Unnamed3/prochaineSonnerie/releases/download/"+verChecked+"/base.apk" ));
+    saveBytes("/storage/emulated/0/Download/base.apk", loadBytes("https://github.com/Unnamed3/prochaineSonnerie/releases/download/"+verChecked+"/base.apk"));
     File apkFile = new File("/storage/emulated/0/Download/base.apk");
     Intent intent = new Intent(Intent.ACTION_VIEW);
 intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
