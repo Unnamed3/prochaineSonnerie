@@ -1,4 +1,4 @@
-String thisVersion = "v1r";
+String thisVersion = "v1.0.1r";
 String[] verCheckLoad;
 String verChecked = "";
 boolean CFUerror = false;
@@ -79,7 +79,6 @@ void setup () {
 
 
 void draw () {
-  text(verCheckLoad[0],midX,midY);
   fill(0);
   // L'écran de fin des cours qui s'affiche lorsque le scan de la sonnerie suivante arrive au bout
   if (screen == 404) {
