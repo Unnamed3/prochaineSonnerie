@@ -1,7 +1,7 @@
 import android.content.Intent;
 import android.net.Uri;
 import java.io.File;
-String thisVersion = "v1.1.2";
+String thisVersion = "v1.1.3";
 String[] verCheckLoad;
 String verChecked = "";
 boolean CFUerror = false;
@@ -254,7 +254,7 @@ void draw () {
         textAlign(CENTER, CENTER);
         textSize(0.045*screenY);
         if (!CFUerror) {
-          if (verChecked != thisVersion)
+          if (!verChecked.equals(thisVersion))
           {
             text("WARNING ! You run an old version ("+thisVersion+")", midX, screenY*0.95);
           }
