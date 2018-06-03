@@ -1,7 +1,7 @@
 import android.content.Intent;
 import android.net.Uri;
 import java.io.File;
-String thisVersion = "v1.1.3";
+String thisVersion = "v1.1.4";
 String[] verCheckLoad;
 String verChecked = "";
 boolean CFUerror = false;
