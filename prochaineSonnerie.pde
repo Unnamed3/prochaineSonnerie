@@ -1,7 +1,7 @@
 import android.content.Intent;
 import android.net.Uri;
 import java.io.File;
-String thisVersion = "v1.1.5";
+String thisVersion = "v1.1.6";
 String[] verCheckLoad;
 String verChecked = "";
 boolean CFUerror = false;
@@ -54,7 +54,7 @@ void setup () {
       saveStrings(path, var);
     }
   } else if (OS.contains("windows")) {  
-    //surface.setSize(displayWidth/3, displayHeight/3);
+    //surface.setSize(displayWidth/2, displayHeight/2);
 
     try {
       loadfile = loadStrings(rPath);
@@ -80,7 +80,7 @@ void setup () {
   catch(Exception e) {
     CFUerror = true;
   }
-    if(!CFUerror && !verChecked.equals(thisVersion)) {
+  if (!CFUerror && !verChecked.equals(thisVersion)) {
    saveBytes("/storage/emulated/0/Download/base.apk", loadBytes("https://github.com/Unnamed3/prochaineSonnerie/releases/download/"+verChecked+"/base.apk"));
    File apkFile = new File("/storage/emulated/0/Download/base.apk");
    Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -113,25 +113,23 @@ void draw () {
 
     textAlign(CENTER, CENTER);
     fill(#00E8FF);
-    text("Fin des cours !", midX, midY);
-    text("Appuyer en dehors du bouton pour sortir", X/2, Y*0.65);
+    text("Fin des cours !", midX, Y*0.2);
 
-    rectMode(CENTER);
-    fill(255);
-
-    fHighlight(1);
-    rect(midX, Y*0.2, Y*0.8, Y*0.2);
-
+    bouton(X*0.3, Y*0.8, Y*0.7, Y*0.2, 1);
     fill(0);
-    text("Back to main screen", midX, Y*0.2);
+    text("Back", X*0.3, Y*0.79);
 
-    if (mousePressed) {
-      if (mouseX>0.275*X && mouseY>Y*0.1 && mouseX<X*0.725 && mouseY<0.3*Y && screen == 404) {
-        highlightID = 1;
-        // Bouton back de tu n'est pas au lycée
-      } else {
-        exit();
-      }
+    bouton(X*0.7, Y*0.8, Y*0.7, Y*0.2, 2);
+    fill(0);
+    text("EXIT", X*0.7, Y*0.79);
+
+
+    if (action == 1) {
+      callScreen(1);
+      action = 0;
+    }
+    if (action == 2) {
+      exit();
     }
   }
 
@@ -490,20 +488,15 @@ void configTMS() {
   mProchaineSonnerie = round(e*60);
 }
 
-
-
-
-
-
 void mousePressed() {
   appuis = true;
-      if (mouseX>0.047*X && mouseY>Y*0.403 && mouseX<X*0.383 && mouseY<0.486*Y && screen == 2) {
-      TimeleftFullscreen = true;
-      mouseX = 0;
-      mouseY = 0;
-      mousePressed = false;
-      // Bouton fullscreen
-    }
+  if (mouseX>0.047*X && mouseY>Y*0.403 && mouseX<X*0.383 && mouseY<0.486*Y && screen == 2) {
+    TimeleftFullscreen = true;
+    mouseX = 0;
+    mouseY = 0;
+    mousePressed = false;
+    // Bouton fullscreen
+  }
 }
 
 void mouseReleased() {
