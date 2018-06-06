@@ -1,7 +1,7 @@
 import android.content.Intent;
 import android.net.Uri;
 import java.io.File;
-String thisVersion = "v1.1.6";
+String thisVersion = "v1.1.7";
 String[] verCheckLoad;
 String verChecked = "";
 boolean CFUerror = false;
@@ -30,6 +30,7 @@ int typeSn=0;
 String path = "/storage/emulated/0/prochaineSonnerie.conf";
 String rPath = "prochaineSonnerie.conf";
 public static String OS = System.getProperty("os.name").toLowerCase();
+float rectProgress = 0;
 
 boolean TimeleftFullscreen = false;
 
@@ -39,7 +40,6 @@ boolean appuis = false, relachement = false, depart = false;
 
 void setup () {
   //  size(1280, 720); //tester la résolution d'écran de son choix (pour le dev sur PC)
-
 
   if (OS.equalsIgnoreCase("linux")) {
     size(displayWidth, displayHeight);
@@ -81,13 +81,13 @@ void setup () {
     CFUerror = true;
   }
   if (!CFUerror && !verChecked.equals(thisVersion)) {
-   saveBytes("/storage/emulated/0/Download/base.apk", loadBytes("https://github.com/Unnamed3/prochaineSonnerie/releases/download/"+verChecked+"/base.apk"));
-   File apkFile = new File("/storage/emulated/0/Download/base.apk");
-   Intent intent = new Intent(Intent.ACTION_VIEW);
-   intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
-   intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-   getActivity().startActivity(intent);
-   }
+    saveBytes("/storage/emulated/0/Download/base.apk", loadBytes("https://github.com/Unnamed3/prochaineSonnerie/releases/download/"+verChecked+"/base.apk"));
+    File apkFile = new File("/storage/emulated/0/Download/base.apk");
+    Intent intent = new Intent(Intent.ACTION_VIEW);
+    intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
+    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    getActivity().startActivity(intent);
+  }
 }
 
 
@@ -136,6 +136,7 @@ void draw () {
   // Ecran d'accueil au lancement de l'application
   if (screen == 1) {
     background(204);
+    noStroke();
 
     textSize (0.0765*Y);
     textAlign(CENTER, CENTER);
@@ -179,7 +180,7 @@ void draw () {
   }
 
   if (screen == 3) {  //setup screen
-
+    stroke(0);
     background(255);
 
 
@@ -242,25 +243,8 @@ void draw () {
         mouseY = 0;
         TimeleftFullscreen = false;
       }
-      a = hour(); 
-      b = minute(); 
-      c = second();
-      b = a*60+b; 
-      c = b*60+c; // convertir heure actuelle en secondes écoulées depuis minuit
-      heurSecondes = c;
 
-      timeLeft = prochaineSonnerie - heurSecondes; // le temps restant (en secondes) est la différence entre la prochaine sonnerie et l'heure actuelle
-
-      float d = (float)timeLeft/60; // convertir en minutes...
-      mTimeLeft = floor (d); //... puis mettre dans la variable d
-
-      float partDecd = (float)(d-(floor(d))); //extraire la partie décimale de la variable d
-      sTimeLeft = (int)(partDecd*60);
-
-      float e = partDecd*60;
-      sTimeLeft = round(e);
-
-      hTimeLeft = timeLeft/3600; 
+      calcul("All");
 
       fill(255);
       if (hTimeLeft == 0) {
@@ -304,25 +288,7 @@ void draw () {
       text("Prochaine sonnerie à : "+hProchaineSonnerie+"h"+mProchaineSonnerie+"m"+sProchaineSonnerie+"s", X*0.05, Y*0.2);
       text(intercours[typeSn], X*0.05, Y*0.3);
 
-      a = hour(); 
-      b = minute(); 
-      c = second();
-      b = a*60+b; 
-      c = b*60+c; // convertir heure actuelle en secondes écoulées depuis minuit
-      heurSecondes = c;
-
-      timeLeft = prochaineSonnerie - heurSecondes; // le temps restant (en secondes) est la différence entre la prochaine sonnerie et l'heure actuelle
-
-      float d = (float)timeLeft/60; // convertir en minutes...
-      mTimeLeft = floor (d); //... puis mettre dans la variable d
-
-      float partDecd = (float)(d-(floor(d))); //extraire la partie décimale de la variable d
-      sTimeLeft = (int)(partDecd*60);
-
-      float e = partDecd*60;
-      sTimeLeft = round(e);
-
-      hTimeLeft = timeLeft/3600; 
+      calcul("All");
 
       fill(255, 0, 0);
       if (hTimeLeft == 0) {
@@ -340,24 +306,12 @@ void draw () {
 
       fill(#00E8FF);
       noStroke();
-      float f = 0.89;
-      //pourcentCours = 99;
-      f *= (pourcentCours_/100);
-      rect(X*0.05, Y*0.8, X*f, Y*0.11);
-      stroke(0);
-
+      rect(X*0.05, Y*0.8, X*rectProgress, Y*0.11);
       //((K-J))/(B-J)*100>P
       // ((P/100)* - )
       //(heure now - début cours) ÷ sonnerie fin cours - début cours) x 100
 
-      d = heurSecondes - derniereSonnerie;
-      e = prochaineSonnerie - derniereSonnerie;
-      pourcentCours = (d/e)*100;
 
-      //arrondir au dixieme pres
-      pourcentCoursInt = (int(pourcentCours*10));
-      pourcentCours_ = (float(pourcentCoursInt));
-      pourcentCours_ /= 10;
 
       textAlign(CENTER, CENTER);
       text("Progression du cours : " + pourcentCours_+"%", midX, 0.7*Y);
@@ -526,7 +480,42 @@ void keyPressed() {
   keyCode = 0;
   key = 0;
 }
-void calculs() {
+void calcul(String what) {
+  if (what == "All") {
+    a = hour(); 
+    b = minute(); 
+    c = second();
+    b = a*60+b; 
+    c = b*60+c; // convertir heure actuelle en secondes écoulées depuis minuit
+    heurSecondes = c;
+
+    timeLeft = prochaineSonnerie - heurSecondes; // le temps restant (en secondes) est la différence entre la prochaine sonnerie et l'heure actuelle
+
+    float d = (float)timeLeft/60; // convertir en minutes...
+    mTimeLeft = int(d%60);
+
+    float partDecd = (float)(d-(floor(d))); //extraire la partie décimale de la variable d
+    sTimeLeft = (int)(partDecd*60);
+
+    float e = partDecd*60;
+    sTimeLeft = round(e);
+
+    hTimeLeft = timeLeft/3600;
+
+    float f = 0.89;
+    //pourcentCours = 99;
+    f *= (pourcentCours_/100);
+    rectProgress = f;
+    stroke(0);
+    d = heurSecondes - derniereSonnerie;
+    e = prochaineSonnerie - derniereSonnerie;
+    pourcentCours = (d/e)*100;
+
+    //arrondir au dixieme pres
+    pourcentCoursInt = (int(pourcentCours*10));
+    pourcentCours_ = (float(pourcentCoursInt));
+    pourcentCours_ /= 10;
+  }
 }
 
 
