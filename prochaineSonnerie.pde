@@ -1,7 +1,12 @@
 import android.content.Intent;
 import android.net.Uri;
 import java.io.File;
-String thisVersion = "v1.1.7";
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.temporal.ChronoUnit;
+
+
+String thisVersion = "v1.0";
 String[] verCheckLoad;
 String verChecked = "";
 boolean CFUerror = false;
@@ -40,54 +45,12 @@ boolean appuis = false, relachement = false, depart = false;
 
 void setup () {
   //  size(1280, 720); //tester la résolution d'écran de son choix (pour le dev sur PC)
-
-  if (OS.equalsIgnoreCase("linux")) {
-    size(displayWidth, displayHeight);
-
-    try {
-      loadfile = loadStrings(path);
-      String calibragestring = loadfile[0];
-      calibrage = parseInt(calibragestring);
-    } 
-    catch(Exception e) {
-      String[] var = {"0"};
-      saveStrings(path, var);
-    }
-  } else if (OS.contains("windows")) {  
-    //surface.setSize(displayWidth/2, displayHeight/2);
-
-    try {
-      loadfile = loadStrings(rPath);
-      String calibragestring = loadfile[0];
-      calibrage = parseInt(calibragestring);
-    } 
-    catch(Exception e) {
-      String[] var = {"0"};
-      saveStrings(rPath, var);
-    }
-  }
-
+  size(displayWidth, displayHeight);
+  calculCalibrage();
   X = width;
   Y = height;
   midX = X*0.5;
   midY = Y*0.5;
-
-  try {
-    verCheckLoad = loadStrings(CFUurl);
-
-    verChecked = verCheckLoad[0];
-  } 
-  catch(Exception e) {
-    CFUerror = true;
-  }
-  if (!CFUerror && !verChecked.equals(thisVersion)) {
-    saveBytes("/storage/emulated/0/Download/base.apk", loadBytes("https://github.com/Unnamed3/prochaineSonnerie/releases/download/"+verChecked+"/base.apk"));
-    File apkFile = new File("/storage/emulated/0/Download/base.apk");
-    Intent intent = new Intent(Intent.ACTION_VIEW);
-    intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
-    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    getActivity().startActivity(intent);
-  }
 }
 
 
@@ -99,9 +62,9 @@ void draw () {
    Screen 1 = Écran de démarrage avec les deux boutons
    Screen 2 = Écran affichage heure avec la barre de progression
    Screen 3 = Calibrage setup screen
-   
+
    Screen 404 = Fin des cours
-   
+
    */
 
   fill(0);
@@ -133,208 +96,13 @@ void draw () {
     }
   }
 
-  // Ecran d'accueil au lancement de l'application
-  if (screen == 1) {
-    background(204);
-    noStroke();
-
-    textSize (0.0765*Y);
-    textAlign(CENTER, CENTER);
-    text("Bienvenue sur prochaineSonnerie", midX, 0.07*Y);
-
-    bouton(X*0.25, midY, X*0.3, X*0.3, 1);
-    if (action == 1) {
-      configTMS();
-      callScreen(2);
-      action = 0;
-    }
-
-    bouton(X*0.75, midY, X*0.3, X*0.3, 2);
-    if (action == 2) {
-      callScreen(3);
-      calibrageUnsaved = calibrage;
-      action = 0;
-    }
-
-
-    textAlign(CENTER, CENTER);
-    fill(0);
-    text("Launch", X*0.25, midY);
-    text("Config", X*0.75, midY);
-
-
-    textSize(X*0.04);
-    if (CFUerror) {
-      fill(255, 0, 0);
-      text("No internet, cannot check for updates", midX, Y*0.87);
-    }
-    if (!CFUerror) {
-      fill(0, 255, 0);
-      if (verChecked.equals(thisVersion)) {
-        text("You are up to date ("+thisVersion+")", midX, Y*0.87);
-      } else
-      {
-        text("New version available ! (n°"+verCheckLoad[0]+")\nYou have : "+thisVersion, midX, Y*0.87);
-      }
-    }
-  }
-
-  if (screen == 3) {  //setup screen
-    stroke(0);
-    background(255);
-
-
-    bouton(X*0.10, midY, Y*0.3, Y*0.3, -10);
-    bouton(X*0.3, midY, Y*0.3, Y*0.3, -1);
-
-    bouton(X*0.7, midY, Y*0.3, Y*0.3, 1);
-    bouton(X*0.9, midY, Y*0.3, Y*0.3, 10);
-
-    bouton(X*0.35, Y*0.82, midY, Y*0.2, 84); //bouton back config screen
-    bouton(X*0.65, Y*0.82, midY, Y*0.2, 54); // bouton save
-    switch (action) {
-    case -10:
-      calibrageUnsaved-=10;
-      action = 0;
-      break;
-    case -1:
-      calibrageUnsaved-=1;  
-      action = 0;
-      break;
-    case 1:
-      calibrageUnsaved+=1;  
-      action = 0;
-      break;
-    case 10:
-      calibrageUnsaved+=10;  
-      action = 0;
-      break;
-    case 84:
-      callScreen(1);
-      action = 0;
-      break;
-    case 54:
-      save();
-      break;
-    }
-    fill(0);
-    textAlign(CENTER, CENTER);
-
-    text("Configurer le calibrage", midX, Y*0.10);
-    text("des sonneries", midX, Y*0.20); 
-    text("Back", X*0.35, Y*0.82);
-    text("Save", X*0.65, Y*0.82);
-    text("-10", X*0.10, midY);
-
-    text("-1", X*0.3, midY);
-    text(calibrageUnsaved, X/2, Y/2);
-
-    text("+1", X*0.7, midY);
-    text("+10", X*0.9, midY);
-  }
-
-
-
-  if (screen == 2) {  //ecran affichage heure
-    if (TimeleftFullscreen) {
-      background(0);
-      if (mousePressed) {
-        mouseX = 0; 
-        mouseY = 0;
-        TimeleftFullscreen = false;
-      }
-
-      calcul("All");
-
-      fill(255);
-      if (hTimeLeft == 0) {
-        textSize (0.4*Y);
-        text("Time left", midX, Y*0.2);
-        text(mTimeLeft+"m"+sTimeLeft+"s", midX, Y*0.7);
-      } else {
-        textSize (0.4*Y);
-        text("Time left", midX, Y*0.2);
-        textSize (0.3*Y);
-        text(hTimeLeft+"h "+mTimeLeft+"m"+sTimeLeft+"s", midX, Y*0.7);
-      }
-    } else {
-
-      background (255);
-      textAlign(CENTER, CENTER);
-      textSize(0.045*Y);
-      if (!CFUerror) {
-        if (!verChecked.equals(thisVersion))
-        {
-          text("WARNING ! You run an old version ("+thisVersion+")", midX, Y*0.95);
-        }
-      }
-
-      fill(255);
-      stroke (0);
-
-      bouton(X*0.965, Y*0.05972, X*0.05, X*0.05, 1);
-      if (action == 1) {
-        callScreen(1);
-        action = 0;
-      }
-
-      fill(0);
-      textSize (0.03*Y);
-
-      text("Back", X*0.966, Y*0.055);
-      textSize (0.0765*Y);
-      textAlign (LEFT, TOP);
-      text("Heure "+hour()+":"+minute()+":"+second(), 0.05*X, Y*0.1);
-      text("Prochaine sonnerie à : "+hProchaineSonnerie+"h"+mProchaineSonnerie+"m"+sProchaineSonnerie+"s", X*0.05, Y*0.2);
-      text(intercours[typeSn], X*0.05, Y*0.3);
-
-      calcul("All");
-
-      fill(255, 0, 0);
-      if (hTimeLeft == 0) {
-        text("Il reste : "+mTimeLeft+"m"+sTimeLeft+"s", 0.05*X, Y*0.4);
-      } else {
-        text("Il reste : "+hTimeLeft+"h "+mTimeLeft+"m"+sTimeLeft+"s", 0.05*X, Y*0.4);
-      }
-
-      fill(255);
-      //prochaineSonnerie = 2000; ///////////////LIGNE POUR DEBUG après 18h sans déregler l'heure de son pc (ajoute une sonnerie (en secondes écoulées depuis minuit))////////////////////////////////////
-
-      rectMode(CORNER);
-      fill(255);
-      rect(0.05*X-1, 0.80*Y-1, 0.89*X+2, 0.11*Y+2);
-
-      fill(#00E8FF);
-      noStroke();
-      rect(X*0.05, Y*0.8, X*rectProgress, Y*0.11);
-      //((K-J))/(B-J)*100>P
-      // ((P/100)* - )
-      //(heure now - début cours) ÷ sonnerie fin cours - début cours) x 100
-
-
-
-      textAlign(CENTER, CENTER);
-      text("Progression du cours : " + pourcentCours_+"%", midX, 0.7*Y);
-    }
-
-    //line(X*0.5,Y*0.7, X*0.5, Y*0.8); // ligne pour vérifier si le 50% de la progressbar fonctionne correctement
-
-    if (heurSecondes > prochaineSonnerie) {
-      configTMS();
-    }
-  }
-
-  //Always on display SΛMSUNG
-  if (X < Y) {
-
-    screen = 2;
-
+  //Always on display for WearOS
     background(0);
     fill(255);
     textAlign(CENTER, CENTER);
+    calcul("All");
 
-
-    textSize(X*0.3);
+    textSize(X*0.07);
 
     if (hour()<10) {
       text("0"+hour(), midX, midY*0.6);
@@ -370,24 +138,28 @@ void draw () {
       text("Fin des cours", midX, midY*1.15);
       textSize(X*0.06);
     }
-  }
 }
 
 
-
+void calculCalibrage() {
+  // calcul du décalage de jour
+  long jdecal = ChronoUnit.DAYS.between(LocalDate.of(2018, Month.SEPTEMBER, 5),LocalDate.now());
+  // calcul du calibrage
+  this.calibrage = (-14*jdecal)/13;
+}
 
 
 void configTMS() {
 
-  a = hour();   
-  b = minute(); 
+  a = hour();
+  b = minute();
   c = second();
-  b = a*60+b; 
+  b = a*60+b;
   c = b*60+c;
   heurSecondes = c;
 
-  a=0; 
-  b=0; 
+  a=0;
+  b=0;
   c=0;
   prochaineSonnerie = 0;
 
@@ -396,7 +168,7 @@ void configTMS() {
     prochaineSonnerie = a;
     b++;
     if (b >= 26) {
-      screen = 404; 
+      screen = 404;
       break;
     }
   }
@@ -482,10 +254,10 @@ void keyPressed() {
 }
 void calcul(String what) {
   if (what == "All") {
-    a = hour(); 
-    b = minute(); 
+    a = hour();
+    b = minute();
     c = second();
-    b = a*60+b; 
+    b = a*60+b;
     c = b*60+c; // convertir heure actuelle en secondes écoulées depuis minuit
     heurSecondes = c;
 
@@ -515,46 +287,5 @@ void calcul(String what) {
     pourcentCoursInt = (int(pourcentCours*10));
     pourcentCours_ = (float(pourcentCoursInt));
     pourcentCours_ /= 10;
-  }
-}
-
-
-//fonction bouton
-void bouton(float posX, float posY, float tailleX, float tailleY, int ID) {
-  fill(255);
-
-  rectMode(CENTER);
-  rect(posX, posY, tailleX, tailleY);  //rectangle du bouton
-
-  //zone d'appui
-  if (appuis == true && mouseX >= posX-tailleX/2 && mouseY >= posY-tailleY/2 && mouseX <= posX+tailleX/2 && mouseY <= posY+tailleY/2) {
-    fill(127);
-    rect(posX, posY, tailleX, tailleY);
-    depart = true;
-  }
-
-  //zone de relachement
-  if (relachement == true && appuis == false && depart == true && mouseX >= posX-tailleX/2 && mouseY >= posY-tailleY/2 && mouseX <= posX+tailleX/2 && mouseY <= posY+tailleY/2) {
-    action = ID;  //definition de l'action a realiser en fonction de l'ID du bouton
-    appuis = false;
-    relachement = false;
-    depart = false;
-    fill(255);
-  }
-}
-
-
-void save() {
-  if (OS.equalsIgnoreCase("linux")) {
-    calibrage = calibrageUnsaved;
-    loadfile[0] = str(calibrage);
-    saveStrings(path, loadfile);
-    // BOUTON Save
-  } else if (OS.contains("windows")) {
-    calibrage = calibrageUnsaved;
-    loadfile[0] = str(calibrage);
-    saveStrings(rPath, loadfile);
-  } else {
-    calibrage = calibrageUnsaved;
   }
 }
