@@ -6,7 +6,7 @@ Calendar cal = Calendar.getInstance();
 int dayOfWeek = 0;
 int matrixDay = 0;
 
-String thisVersion = "v1.2";
+String thisVersion = "v1.2.1";
 String[] verCheckLoad;
 String verChecked = "";
 boolean CFUerror = false;
@@ -102,7 +102,7 @@ void setup () {
       saveStrings(path, var);
     }
   } else if (OS.contains("windows")) {  
-    surface.setSize(displayWidth/2, displayHeight/2);
+    //surface.setSize(displayWidth/2, displayHeight/2);
 
     try {
       loadfile = loadStrings(rPath);
@@ -129,12 +129,7 @@ void setup () {
     CFUerror = true;
   } //Disable this to test on PC
   if (!CFUerror && !verChecked.equals(thisVersion)) {
-    saveBytes("/storage/emulated/0/Download/base.apk", loadBytes("https://github.com/Unnamed3/prochaineSonnerie/releases/download/"+verChecked+"/base.apk"));
-    File apkFile = new File("/storage/emulated/0/Download/base.apk");
-    Intent intent = new Intent(Intent.ACTION_VIEW);
-    intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
-    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    getActivity().startActivity(intent);
+    thread("update");
   }
 }
 
@@ -634,4 +629,26 @@ void save() {
   } else {
     calibrage = calibrageUnsaved;
   }
+}
+
+// Fonction de mise à jour sous un thread
+
+void update() {
+    saveBytes("/storage/emulated/0/Download/base.apk", loadBytes("https://github.com/Unnamed3/prochaineSonnerie/releases/download/"+verChecked+"/base.apk"));
+    File apkFile = new File("/storage/emulated/0/Download/base.apk");
+    Intent intent = new Intent(Intent.ACTION_VIEW);
+    intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
+    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    getActivity().startActivity(intent);
+}
+
+// Fonction du back btn
+
+@Override 
+void onBackPressed() {
+    if(screen==1) {
+      exit();
+    } else {
+      callScreen(1);
+    }
 }
