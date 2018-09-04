@@ -543,15 +543,7 @@ void callScreen (int s) {
   screen = s;
 }
 
-void keyPressed() {
-  if (keyCode==4) {
-    if (screen==2||screen==3) {
-      callScreen(1);
-    }
-  }
-  keyCode = 0;
-  key = 0;
-}
+
 void calcul(String what) {
   if (what == "All") {
     a = hour(); 
