@@ -6,7 +6,7 @@ Calendar cal = Calendar.getInstance();
 int dayOfWeek = 0;
 int matrixDay = 0;
 
-String thisVersion = "v1.2.1";
+String thisVersion = "v1.2.1.1";
 String[] verCheckLoad;
 String verChecked = "";
 boolean CFUerror = false;
@@ -634,12 +634,17 @@ void save() {
 // Fonction de mise à jour sous un thread
 
 void update() {
+    try {
     saveBytes("/storage/emulated/0/Download/base.apk", loadBytes("https://github.com/Unnamed3/prochaineSonnerie/releases/download/"+verChecked+"/base.apk"));
     File apkFile = new File("/storage/emulated/0/Download/base.apk");
     Intent intent = new Intent(Intent.ACTION_VIEW);
     intent.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     getActivity().startActivity(intent);
+    } catch (Exception e) {
+      e.printStackTrace();
+      println("Une erreur s'est produite :/");
+    }
 }
 
 // Fonction du back btn
