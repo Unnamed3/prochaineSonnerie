@@ -631,6 +631,11 @@ void save() {
   }
 }
 
+void exit() {
+  System.exit(0);
+}
+
+
 // Fonction de mise à jour sous un thread
 
 void update() {
