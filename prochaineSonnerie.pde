@@ -1,7 +1,12 @@
 import android.content.Intent;
 import android.net.Uri;
 import java.io.File;
-String thisVersion = "v1.1.7";
+import java.util.Calendar;
+Calendar cal = Calendar.getInstance();
+int dayOfWeek = 0;
+int matrixDay = 0;
+
+String thisVersion = "v1.2";
 String[] verCheckLoad;
 String verChecked = "";
 boolean CFUerror = false;
@@ -12,12 +17,55 @@ boolean highlight = false;
 int highlightID = 0;
 int X = 0, Y = 0;
 float midX, midY; //milieu d ecran
-int[] Lsonne = {0, 29100, 29400, 32700, 33100, 36000, 36600, 36900, 40200, 40500, 43500, 43800, 46800, 47100, 49800, 50100, 53400, 53700, 56700, 57300, 57600, 60900, 61200, 64200, 0, 0};
-//8h05 = 29 100s | 8h10 = 29 400 | 9h05 = 32 700 | 9h10 = 33 000 | 10h = 36 000 |10h10 = 36 600|10h15 = 36 900|11h = 39 600|11h15 = 40 500|12h05 = 43 500|12h10 = 43 800|13h = 46 800|13h05 = 47 100|13h50 = 49 800|13h55 = 50 100|14h50 = 53 400|14h55 = 53 700|15h45 = 56 700|15h55 = 57 300|16h = 57 600|16h55 = 60 900|17h = 61 200|17h50 = 64 200
+int[] Lsonne = {0, 29100, 29400, 32700, 33000, 36000, 36600, 36900, 40200, 40500, 43500, 43800, 46800, 47100, 49800, 50100, 53400, 53700, 56700, 57300, 57600, 60900, 61200, 64200, 0, 0};
+//8h05 = 29 100s | 8h10 = 29 400 | 9h05 = 32 700 | 9h10 = 33 000 | 10h = 36 000 |10h10 = 36 600|10h15 = 36 900|11h10 = 40 200|11h15 = 40 500|12h05 = 43 500|12h10 = 43 800|13h = 46 800|13h05 = 47 100|13h50 = 49 800|13h55 = 50 100|14h50 = 53 400|14h55 = 53 700|15h45 = 56 700|15h55 = 57 300|16h = 57 600|16h55 = 60 900|17h = 61 200|17h50 = 64 200
+
+int[][] edtMatrix = {
+  {0,0,0,0,0,0,0}, //Anti 0-begin element
+  {1,1,1,1,1,0,0}, //8h05
+  {1,1,1,1,1,0,0}, //8 10
+  
+  {0,1,1,0,1,0,0}, //9 05
+  {0,1,1,0,1,0,0}, //9 10
+  
+  {0,1,1,1,1,0,0}, //10
+ 
+  {0,1,1,1,1,0,0}, //10 10 Pause 10m matin
+  {0,1,1,1,1,0,0}, //10 15
+  
+  
+  {1,1,1,0,1,0,0}, //11 10
+  {0,1,1,0,1,0,0}, //11 15
+  
+  {0,1,1,1,1,0,0}, //12 05
+  {0,1,1,1,1,0,0}, //12 10 Midi
+  {0,1,0,1,1,0,0}, //13
+  {0,1,0,1,1,0,0}, //13 05
+  
+  {1,1,0,1,1,0,0}, //13 50
+  {1,1,0,1,1,0,0}, //13 55
+  
+  {1,0,0,1,1,0,0}, //14 50
+  {0,0,0,1,1,0,0}, //14 55
+  
+  {0,1,0,1,1,0,0}, //15 45 Pause 10m après-midi
+  
+  {0,1,0,1,1,0,0}, //15 55 
+  {0,1,0,1,1,1,0}, //16
+  
+  {0,0,0,1,0,1,0}, //16 55
+  {0,0,0,1,0,1,0}, //17
+ 
+  {0,1,0,1,1,1,0}, //17 50
+  {0,1,0,1,1,1,0},
+  {0,1,0,1,1,1,0},
+  {0,1,0,1,1,1,0},
+};
+
 int calibrage = 0, calibrageUnsaved = 0;
 String[] loadfile;
 int screen = 1;
-String[]intercours = {"(Début / fin cours)", "(Intercours)", "(Recré)", "(Fin de la récré)", "(Fin des cours)"};
+String[]intercours = {"(Début / fin cours)", "(Retard)", "(Recré)", "(Fin de la récré)", "(Fin des cours)"};
 int heurSecondes = 0;
 int prochaineSonnerie = 0, sProchaineSonnerie = 0, mProchaineSonnerie = 0, hProchaineSonnerie = 0;
 int a = 0, b = 0, c = 0;
@@ -54,7 +102,7 @@ void setup () {
       saveStrings(path, var);
     }
   } else if (OS.contains("windows")) {  
-    //surface.setSize(displayWidth/2, displayHeight/2);
+    surface.setSize(displayWidth/2, displayHeight/2);
 
     try {
       loadfile = loadStrings(rPath);
@@ -79,7 +127,7 @@ void setup () {
   } 
   catch(Exception e) {
     CFUerror = true;
-  }
+  } //Disable this to test on PC
   if (!CFUerror && !verChecked.equals(thisVersion)) {
     saveBytes("/storage/emulated/0/Download/base.apk", loadBytes("https://github.com/Unnamed3/prochaineSonnerie/releases/download/"+verChecked+"/base.apk"));
     File apkFile = new File("/storage/emulated/0/Download/base.apk");
@@ -379,29 +427,52 @@ void draw () {
 
 void configTMS() {
 
-  a = hour();   
-  b = minute(); 
+/*
+println(cal.get(Calendar.DAY_OF_WEEK));
+Dimanche 1
+Lundi 2
+Mardi 3
+Mercredi 4
+Jeudi 5
+Vendredi 6
+Samedi 7
+FR : day--; (if day == 0) day = 7. 
+*/
+
+  matrixDay = cal.get(Calendar.DAY_OF_WEEK)-2;
+  dayOfWeek = cal.get(Calendar.DAY_OF_WEEK)-1;
+  if (dayOfWeek == 0) dayOfWeek =7;
+  a = hour();
+  b = minute();
   c = second();
-  b = a*60+b; 
+  b = a*60+b;
   c = b*60+c;
   heurSecondes = c;
 
-  a=0; 
-  b=0; 
+  a=0;
+  b=0;
   c=0;
   prochaineSonnerie = 0;
-
-  while (prochaineSonnerie <= heurSecondes) {
+  
+  while(true) {
+    
+    if (prochaineSonnerie > heurSecondes && edtMatrix[b-1][matrixDay]==1) 
+    {
+      println("element "+(b-1)+" day of week "+dayOfWeek+"matrix day "+matrixDay);
+      println("break ok");
+      println(edtMatrix[0][0]);
+      break;
+    }
     a = Lsonne [b] + calibrage;
     prochaineSonnerie = a;
     b++;
     if (b >= 26) {
-      screen = 404; 
+      screen = 404;
       break;
     }
   }
 
-  b--;
+b--;
   if (b==1 || b==3 || b==8 || b==10 || b==12|| b==14 || b==16 || b==21) {
     typeSn = 0;
   }
@@ -421,11 +492,17 @@ void configTMS() {
     typeSn = 4;
   }
 
+if (b>1){
+  while (edtMatrix[b-1][matrixDay]!=1){
+    b--;
+  }
+  derniereSonnerie = Lsonne [b-1] + calibrage;
+}
+else{
+  derniereSonnerie = Lsonne [b-1] + calibrage;
+}
 
-  b--;
-  derniereSonnerie = Lsonne [b] + calibrage;
-
-
+println("Dernière sonnerie "+(b-1));
 
   float d = (float)prochaineSonnerie/60;
   float partDecd = (float)(d-(floor(d)));
