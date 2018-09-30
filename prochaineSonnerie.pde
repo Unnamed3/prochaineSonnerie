@@ -6,7 +6,7 @@ Calendar cal = Calendar.getInstance();
 int dayOfWeek = 0;
 int matrixDay = 0;
 
-String thisVersion = "v1.2.2";
+String thisVersion = "v1.2.3";
 String[] verCheckLoad;
 String verChecked = "";
 boolean CFUerror = false;
@@ -429,6 +429,7 @@ println(cal.get(Calendar.DAY_OF_WEEK));
    */
 
   matrixDay = cal.get(Calendar.DAY_OF_WEEK)-2;
+  if (matrixDay == -1) matrixDay = 6; 
   dayOfWeek = cal.get(Calendar.DAY_OF_WEEK)-1;
   if (dayOfWeek == 0) dayOfWeek =7;
   a = hour();
