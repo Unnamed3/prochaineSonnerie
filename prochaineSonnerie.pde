@@ -6,7 +6,7 @@ Calendar cal = Calendar.getInstance();
 int dayOfWeek = 0;
 int matrixDay = 0;
 
-String thisVersion = "v1.2.3";
+String thisVersion = "v1.2.4";
 String[] verCheckLoad;
 String verChecked = "";
 boolean CFUerror = false;
@@ -56,7 +56,7 @@ int[][] edtMatrixB ={
 
 int calibrage = 0, calibrageUnsaved = 0;
 String[] loadfile;
-int screen = 1;
+String screen = "0";
 String[]intercours = {"(Début / fin cours)", "(Retard)", "(Recré)", "(Fin de la récré)", "(Fin des cours)"};
 int heurSecondes = 0;
 int prochaineSonnerie = 0, sProchaineSonnerie = 0, mProchaineSonnerie = 0, hProchaineSonnerie = 0;
@@ -77,7 +77,9 @@ boolean TimeleftFullscreen = false;
 int action = 0;
 boolean appuis = false, relachement = false, depart = false;
 boolean autoSkip = true;
-
+String[] weekDay = {"Lundi", "Mardi", "Mercredi","Jeudi", "Vendredi", "Samedi", "Dimanche" };
+int weekNumber; // numéro de la semaine dans l'année
+char weekLetter; // Semaine A ou semaine B
 
 void setup () {
   //  size(1280, 720); //tester la résolution d'écran de son choix (pour le dev sur PC)
@@ -95,7 +97,9 @@ void setup () {
       saveStrings(path, var);
     }
   } else if (OS.contains("windows")) {  
-    //surface.setSize(displayWidth/2, displayHeight/2);
+    ///surface.setSize(displayWidth/2, displayHeight/2);
+    ///surface.setResizable(true);
+    
 
     try {
       loadfile = loadStrings(rPath);
@@ -130,48 +134,29 @@ void setup () {
 
 
 void draw () {
+
+  X = width;
+  Y = height;
+  midX = X*0.5;
+  midY = Y*0.5;
   /*
   SCREEN LIST
+  New system : a.b.c  a=screen, b= subscreen, c= subscreen of subscreen
    Screen 1 = Écran de démarrage avec les deux boutons
+   Screen "1.f" = Fin des cours
+   Screen 1.1 = Timeleft fullscreen
    Screen 2 = Écran affichage heure avec la barre de progression
    Screen 3 = Calibrage setup screen
    
-   Screen 404 = Fin des cours
+  
    
    */
 
   fill(0);
   // L'écran de fin des cours qui s'affiche lorsque le scan de la sonnerie suivante arrive au bout
-  if (screen == 404) {
-    screen = 404;
-    textSize (0.0765*Y);
-    background(255);
-
-    textAlign(CENTER, CENTER);
-    fill(#00E8FF);
-    stroke(0);
-    text("Fin des cours !", midX, Y*0.2);
-
-    bouton(X*0.3, Y*0.8, Y*0.7, Y*0.2, 1);
-    fill(0);
-    text("Back", X*0.3, Y*0.79);
-
-    bouton(X*0.7, Y*0.8, Y*0.7, Y*0.2, 2);
-    fill(0);
-    text("EXIT", X*0.7, Y*0.79);
-
-
-    if (action == 1) {
-      callScreen(1);
-      action = 0;
-    }
-    if (action == 2) {
-      exit();
-    }
-  }
 
   // Ecran d'accueil au lancement de l'application
-  if (screen == 1) {
+  if (screen == "0") {
     background(204);
     noStroke();
 
@@ -182,13 +167,13 @@ void draw () {
     bouton(X*0.25, midY, X*0.3, X*0.3, 1);
     if (action == 1) {
       configTMS();
-      callScreen(2);
+      callScreen("1");
       action = 0;
     }
 
     bouton(X*0.75, midY, X*0.3, X*0.3, 2);
     if (action == 2) {
-      callScreen(3);
+      callScreen("2");
       calibrageUnsaved = calibrage;
       action = 0;
     }
@@ -214,65 +199,9 @@ void draw () {
         text("New version available ! (n°"+verCheckLoad[0]+")\nYou have : "+thisVersion, midX, Y*0.87);
       }
     }
-  }
+  } // END SCREEN 0
 
-  if (screen == 3) {  //setup screen
-    stroke(0);
-    background(255);
-
-
-    bouton(X*0.10, midY, Y*0.3, Y*0.3, -10);
-    bouton(X*0.3, midY, Y*0.3, Y*0.3, -1);
-
-    bouton(X*0.7, midY, Y*0.3, Y*0.3, 1);
-    bouton(X*0.9, midY, Y*0.3, Y*0.3, 10);
-
-    bouton(X*0.35, Y*0.82, midY, Y*0.2, 84); //bouton back config screen
-    bouton(X*0.65, Y*0.82, midY, Y*0.2, 54); // bouton save
-    switch (action) {
-    case -10:
-      calibrageUnsaved-=10;
-      action = 0;
-      break;
-    case -1:
-      calibrageUnsaved-=1;  
-      action = 0;
-      break;
-    case 1:
-      calibrageUnsaved+=1;  
-      action = 0;
-      break;
-    case 10:
-      calibrageUnsaved+=10;  
-      action = 0;
-      break;
-    case 84:
-      callScreen(1);
-      action = 0;
-      break;
-    case 54:
-      save();
-      break;
-    }
-    fill(0);
-    textAlign(CENTER, CENTER);
-
-    text("Configurer le calibrage", midX, Y*0.10);
-    text("des sonneries", midX, Y*0.20); 
-    text("Back", X*0.35, Y*0.82);
-    text("Save", X*0.65, Y*0.82);
-    text("-10", X*0.10, midY);
-
-    text("-1", X*0.3, midY);
-    text(calibrageUnsaved, X/2, Y/2);
-
-    text("+1", X*0.7, midY);
-    text("+10", X*0.9, midY);
-  }
-
-
-
-  if (screen == 2) {  //ecran affichage heure
+    if (screen == "1") {  //ecran prochaineSonnerie, heure, timeleft...
     if (TimeleftFullscreen) {
       background(0);
       if (mousePressed) {
@@ -299,6 +228,7 @@ void draw () {
       background (255);
       textAlign(CENTER, CENTER);
       textSize(0.045*Y);
+      text(weekDay[matrixDay]+" - Semaine "+weekLetter, midX, 0.05*Y);
       if (!CFUerror) {
         if (!verChecked.equals(thisVersion))
         {
@@ -311,7 +241,7 @@ void draw () {
 
       bouton(X*0.965, Y*0.05972, X*0.05, X*0.05, 1);
       if (action == 1) {
-        callScreen(1);
+        callScreen("0");
         action = 0;
       }
 
@@ -359,12 +289,94 @@ void draw () {
     if (heurSecondes > prochaineSonnerie) {
       configTMS();
     }
+  }// END SCREEN 1
+  
+  if (screen == "1.f") {
+    textSize (0.0765*Y);
+    background(255);
+
+    textAlign(CENTER, CENTER);
+    fill(#00E8FF);
+    stroke(0);
+    text("Fin des cours !", midX, Y*0.2);
+
+    bouton(X*0.3, Y*0.8, Y*0.7, Y*0.2, 1);
+    fill(0);
+    text("Back", X*0.3, Y*0.79);
+
+    bouton(X*0.7, Y*0.8, Y*0.7, Y*0.2, 2);
+    fill(0);
+    text("EXIT", X*0.7, Y*0.79);
+
+
+    if (action == 1) { // Back button
+      callScreen("0");
+      action = 0;
+    }
+    if (action == 2) {// Exit button
+      exit();
+    }
   }
+  
+  if (screen == "2") {  //setup screen
+    stroke(0);
+    background(255);
+
+
+    bouton(X*0.10, midY, Y*0.3, Y*0.3, -10);
+    bouton(X*0.3, midY, Y*0.3, Y*0.3, -1);
+
+    bouton(X*0.7, midY, Y*0.3, Y*0.3, 1);
+    bouton(X*0.9, midY, Y*0.3, Y*0.3, 10);
+
+    bouton(X*0.35, Y*0.82, midY, Y*0.2, 84); //bouton back config screen
+    bouton(X*0.65, Y*0.82, midY, Y*0.2, 54); // bouton save
+    switch (action) {
+    case -10:
+      calibrageUnsaved-=10;
+      action = 0;
+      break;
+    case -1:
+      calibrageUnsaved-=1;  
+      action = 0;
+      break;
+    case 1:
+      calibrageUnsaved+=1;  
+      action = 0;
+      break;
+    case 10:
+      calibrageUnsaved+=10;  
+      action = 0;
+      break;
+    case 84:
+      callScreen("0");
+      action = 0;
+      break;
+    case 54:
+      save();
+      break;
+    }
+    fill(0);
+    textAlign(CENTER, CENTER);
+
+    text("Configurer le calibrage", midX, Y*0.10);
+    text("des sonneries", midX, Y*0.20); 
+    text("Back", X*0.35, Y*0.82);
+    text("Save", X*0.65, Y*0.82);
+    text("-10", X*0.10, midY);
+
+    text("-1", X*0.3, midY);
+    text(calibrageUnsaved, X/2, Y/2);
+
+    text("+1", X*0.7, midY);
+    text("+10", X*0.9, midY);
+  }
+
 
   //Always on display SΛMSUNG
   if (X < Y) {
 
-    screen = 2;
+    screen = "1";
 
     background(0);
     fill(255);
@@ -429,8 +441,13 @@ println(cal.get(Calendar.DAY_OF_WEEK));
    */
 
   matrixDay = cal.get(Calendar.DAY_OF_WEEK)-2;
-  if (matrixDay == -1) matrixDay = 6; 
+  if (matrixDay == -1) matrixDay = 6;
   dayOfWeek = cal.get(Calendar.DAY_OF_WEEK)-1;
+  weekNumber = cal.get(Calendar.WEEK_OF_YEAR);
+  if (weekNumber%2 == 0)
+   weekLetter = 'A';
+else
+   weekLetter = 'B';
   if (dayOfWeek == 0) dayOfWeek =7;
   a = hour();
   b = minute();
@@ -448,8 +465,6 @@ println(cal.get(Calendar.DAY_OF_WEEK));
 
     if (prochaineSonnerie > heurSecondes && edtMatrix[matrixDay][b-1]==1 || autoSkip == true && prochaineSonnerie > heurSecondes) 
     {
-      println("element "+(b-1)+" day of week "+dayOfWeek+"matrix day "+matrixDay);
-      println("break ok");
       println(edtMatrix[0][0]);
       break;
     }
@@ -457,7 +472,7 @@ println(cal.get(Calendar.DAY_OF_WEEK));
     prochaineSonnerie = a;
     b++;
     if (b >= 26) {
-      screen = 404;
+      screen = "1.f";
       break;
     }
   }
@@ -510,7 +525,7 @@ println(cal.get(Calendar.DAY_OF_WEEK));
 
 void mousePressed() {
   appuis = true;
-  if (mouseX>0.047*X && mouseY>Y*0.403 && mouseX<X*0.383 && mouseY<0.486*Y && screen == 2) {
+  if (mouseX>0.047*X && mouseY>Y*0.403 && mouseX<X*0.383 && mouseY<0.486*Y && screen == "1") {
     TimeleftFullscreen = true;
     mouseX = 0;
     mouseY = 0;
@@ -532,7 +547,7 @@ void fHighlight(int X) { //fonction highlight
   }
 }
 
-void callScreen (int s) {
+void callScreen (String s) {
 
   screen = s;
 }
@@ -642,9 +657,9 @@ void update() {
 
 @Override 
  void onBackPressed() {
- if(screen==1) {
+ if(screen=="0") {
  exit();
  } else {
- callScreen(1);
+ callScreen("0");
  }
  }
