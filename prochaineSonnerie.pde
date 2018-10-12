@@ -6,7 +6,7 @@ Calendar cal = Calendar.getInstance();
 int dayOfWeek = 0;
 int matrixDay = 0;
 
-String thisVersion = "v1.2.4";
+String thisVersion = "v1.2.5";
 String[] verCheckLoad;
 String verChecked = "";
 boolean CFUerror = false;
@@ -189,6 +189,8 @@ void draw () {
     if (CFUerror) {
       fill(255, 0, 0);
       text("No internet, cannot check for updates", midX, Y*0.87);
+      textSize(X*0.03);
+      text(thisVersion, midX, Y*0.95);
     }
     if (!CFUerror) {
       fill(0, 255, 0);
@@ -508,19 +510,11 @@ else
 
   println("Dernière sonnerie "+(b-1));
 
-  float d = (float)prochaineSonnerie/60;
-  float partDecd = (float)(d-(floor(d)));
-  sProchaineSonnerie = (int)(partDecd*60);
-  float e = partDecd*60;
 
-  sProchaineSonnerie = round(e);
-  e = d/60;
-  d = d-(floor(d));
-  d = d+e;
-  //hProchaineSonnerie = floor(d);
   hProchaineSonnerie = prochaineSonnerie/3600;
-  e = e-(floor(e));
-  mProchaineSonnerie = round(e*60);
+  mProchaineSonnerie = ((prochaineSonnerie)%3600)/60;
+  sProchaineSonnerie = prochaineSonnerie%60;
+  
 }
 
 void mousePressed() {
